@@ -1,7 +1,41 @@
 version: "3.3"
+
 services:
-  worker1:
-    build: worker
-    container_name: sandbox-server
+  master:
+    build: master
+    container_name: sandbox-master
     ports:
-      - 8082:80
+      - 8084:8084
+  worker1:
+    build:
+      context: worker
+    command:
+      - uvicorn
+      - main:app
+      - --host
+      - '0.0.0.0'
+      - --port
+      - '80'
+    container_name: sandbox-worker-1
+  worker2:
+    build:
+      context: worker
+    command:
+      - uvicorn
+      - main:app
+      - --host
+      - '0.0.0.0'
+      - --port
+      - '81'
+    container_name: sandbox-worker-2
+  worker3:
+    build:
+      context: worker
+    command:
+      - uvicorn
+      - main:app
+      - --host
+      - '0.0.0.0'
+      - --port
+      - '82'
+    container_name: sandbox-worker-3

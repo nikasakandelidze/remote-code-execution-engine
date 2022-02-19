@@ -33,9 +33,9 @@ class CodeExecutor:
                 process = subprocess.Popen(['python', file_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = process.communicate()
                 if err:
-                    return ExecutionOutput(statuses['error'], str(err), hints['error'])
+                    return ExecutionOutput(statuses['error'], err.decode("utf-8") , hints['error'])
                 else:
-                    return ExecutionOutput(statuses['good'], str(out), hints['good'])
+                    return ExecutionOutput(statuses['good'], out.decode("utf-8") , hints['good'])
             except Exception:
                 return ExecutionOutput(statuses['error'], messages['error'], hints['good'])
 
