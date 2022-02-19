@@ -1,0 +1,7 @@
+version: "3.3"
+services:
+  worker1:
+    build: worker
+    container_name: sandbox-server
+    ports:
+      - 8082:80
