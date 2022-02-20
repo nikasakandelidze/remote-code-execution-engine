@@ -1,14 +1,10 @@
-from typing import Optional
-import httpx
-
 from fastapi import FastAPI
 from pydantic import BaseModel
+from typing import Optional
 
-from adapter.serviceDiscovery import ServiceDiscovery
+from core.gatewayService import GatewaySevice
 
 app = FastAPI()
-
-service_discovery = ServiceDiscovery()
 
 
 class CodeInput(BaseModel):
@@ -16,19 +12,14 @@ class CodeInput(BaseModel):
     language: Optional[str]
 
 
-PATH = "/execute/"
-
+service = GatewaySevice()
 
 @app.post("/api/run/")
 async def execute_code(code_input: CodeInput):
     code = code_input.code
     language = code_input.language
-    try:
-        ip = service_discovery.get_next_worker_ip()
-        print(f'Worker IP: {ip}{PATH}')
-        print(f'DEBUG DATA: code:{code} language:{language}')
-        response = httpx.post(f'{ip}{PATH}', json={'code': code, 'language': language})
+    response = await service.process_execution_input(language, code)
+    if response is None:
+        return {"status": "Error"}
+    else:
         return response.json()
-    except Exception:
-        print('Problem on master server.')
-        return {'status': 'error'}

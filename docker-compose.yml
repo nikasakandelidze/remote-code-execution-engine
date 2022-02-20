@@ -39,3 +39,8 @@ services:
       - --port
       - '82'
     container_name: sandbox-worker-3
+  redis:
+    image: redis
+    container_name: pub-sub-queue
+    expose:
+      - 6379

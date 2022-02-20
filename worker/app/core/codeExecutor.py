@@ -37,7 +37,8 @@ class CodeExecutor:
                     return ExecutionOutput(statuses['error'], err.decode("utf-8") , hints['error'])
                 else:
                     return ExecutionOutput(statuses['good'], out.decode("utf-8") , hints['good'])
-            except Exception:
+            except Exception as e:
+                print(e)
                 return ExecutionOutput(statuses['error'], messages['error'], hints['good'])
             finally:
                 if file_name:
