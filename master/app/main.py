@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
 
+from adapter.workerAdapter import WorkerAdapter
+from adapter.serviceDiscovery import ServiceDiscovery
 from core.gatewayService import GatewaySevice
 
 app = FastAPI()
@@ -12,7 +14,10 @@ class CodeInput(BaseModel):
     language: Optional[str]
 
 
-service = GatewaySevice()
+service_discovery = ServiceDiscovery()
+worker_adatper = WorkerAdapter(service_discovery)
+service = GatewaySevice(worker_adatper)
+
 
 @app.post("/api/run/")
 async def execute_code(code_input: CodeInput):
