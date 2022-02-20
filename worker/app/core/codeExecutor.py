@@ -3,6 +3,7 @@ import subprocess
 from core.domain import ExecutionInput, ExecutionOutput
 from validation.executionValidator import ExecutionValidator
 from adapter.fileSystemAdapter import write_content_in_random_file
+import os
 
 statuses = {
     "not_valid": 400,
@@ -38,6 +39,9 @@ class CodeExecutor:
                     return ExecutionOutput(statuses['good'], out.decode("utf-8") , hints['good'])
             except Exception:
                 return ExecutionOutput(statuses['error'], messages['error'], hints['good'])
+            finally:
+                if file_name:
+                    os.remove(file_name)
 
         else:
             return ExecutionOutput(statuses['not_valid'], messages['not_valid'], hints["not_valid"])
