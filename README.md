@@ -12,6 +12,7 @@ So if you want to have an API where you will send your code for execution and re
 # System Supported languages
 This is a list of languages current API can execute and work with:
 - python
+- javascript
 
 # Architecture
 ![Architecture diagram](./assets/diagram.png)
