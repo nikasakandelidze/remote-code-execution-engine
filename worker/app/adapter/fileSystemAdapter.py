@@ -1,5 +1,4 @@
 import uuid
-import os
 
 extensions = {
     'python': '.py',

@@ -22,16 +22,25 @@ hints = {
     "good": ''
 }
 
+cli_runtime_for_language = {
+    "python":"python",
+    "javascript": "node"
+}
+
 
 class CodeExecutor:
     def __init__(self, validator: ExecutionValidator):
         self.validator = validator
 
+    def get_cli_command_for_language(self, language) -> str:
+        return cli_runtime_for_language[language]
+
     def execute_code(self, input: ExecutionInput) -> ExecutionOutput:
         if self.validator.validate(input):
             file_name = write_content_in_random_file(input.code, input.language)
             try:
-                process = subprocess.Popen(['python', file_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                command = self.get_cli_command_for_language(input.language.lower())
+                process = subprocess.Popen([command, file_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = process.communicate()
                 if err:
                     return ExecutionOutput(statuses['error'], err.decode("utf-8") , hints['error'])
