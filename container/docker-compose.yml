@@ -1,0 +1,69 @@
+version: "3.3"
+
+services:
+  master:
+    build: ../master
+    container_name: sandbox-master
+    ports:
+      - 8084:8084
+    depends_on:
+      - sandbox_queue_worker_1
+      - worker1
+      - worker2
+      - worker3
+  worker1:
+    build:
+      context: ../http_worker
+    command:
+      - uvicorn
+      - main:app
+      - --host
+      - '0.0.0.0'
+      - --port
+      - '80'
+    container_name: sandbox-http_worker-1
+  worker2:
+    build:
+      context: ../http_worker
+    command:
+      - uvicorn
+      - main:app
+      - --host
+      - '0.0.0.0'
+      - --port
+      - '81'
+    container_name: sandbox-http_worker-2
+  worker3:
+    build:
+      context: ../http_worker
+    command:
+      - uvicorn
+      - main:app
+      - --host
+      - '0.0.0.0'
+      - --port
+      - '82'
+    container_name: sandbox-http_worker-3
+  sandbox_queue_worker_1:
+    build:
+      context: ../queue_worker
+    command:
+      - celery
+      - --app
+      - worker
+      - worker
+    container_name: queue_worker_1
+    depends_on:
+      - rabbitmq
+  redis:
+    image: redis
+    container_name: pub-sub-queue
+    expose:
+      - 6379
+  rabbitmq:
+    hostname: "mqueue"
+    image: rabbitmq
+    container_name: message-queue
+    ports:
+      - 5672:5672
+      - 15672:15672

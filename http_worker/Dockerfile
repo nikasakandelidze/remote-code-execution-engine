@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 
 # Update the repository sources list
 RUN apt-get update
-#RUN apt-get upgrade
+
 # Install python
 RUN apt-get install -y python
 RUN apt-get install -y pip
