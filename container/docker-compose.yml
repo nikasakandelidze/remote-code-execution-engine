@@ -61,6 +61,7 @@ services:
       context: ../execution_persister
     command:
       - python3
+      - -u
       - main.py
     depends_on:
       - redis

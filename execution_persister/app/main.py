@@ -2,6 +2,7 @@ from storage.sessionManager import SessionManager
 from storage.storage import Storage
 
 import redis
+import json
 
 HOST = "redis"
 PORT = 6379
@@ -24,9 +25,11 @@ class MessagePersisterConsumer:
                 if type is not None and type == 'subscribe':
                     print("Got initial subscribe message from pubsub queue.")
                 else:
-                    print(f"Got redis message at persister worker. Content: {message}.")
-                    lang = message.get('language')
-                    content = message.get('content')
+                    print(f"Got message for new execution on redis. Content: {message}.")
+                    data = message.get('data').decode("utf-8")
+                    dictionary = json.loads(data)
+                    lang = dictionary.get('language')
+                    content = dictionary.get('content')
                     session = session_manager.get_new_session()
                     try:
                         if lang and content:
