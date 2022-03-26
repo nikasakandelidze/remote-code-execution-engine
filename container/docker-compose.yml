@@ -2,16 +2,17 @@ version: "3.3"
 
 services:
   master:
-    build: ../master
-    container_name: sandbox-master
+    build: ../web
+    container_name: sandbox-web
     ports:
       - 8084:8084
     depends_on:
       - sandbox_queue_worker_1
-      - worker1
-      - worker2
-      - worker3
-  worker1:
+      - http_worker1
+      - http_worker2
+      - http_worker3
+      - redis
+  http_worker1:
     build:
       context: ../http_worker
     command:
@@ -22,7 +23,7 @@ services:
       - --port
       - '80'
     container_name: sandbox-http_worker-1
-  worker2:
+  http_worker2:
     build:
       context: ../http_worker
     command:
@@ -33,7 +34,7 @@ services:
       - --port
       - '81'
     container_name: sandbox-http_worker-2
-  worker3:
+  http_worker3:
     build:
       context: ../http_worker
     command:
@@ -55,6 +56,14 @@ services:
     container_name: queue_worker_1
     depends_on:
       - rabbitmq
+  execution_persister:
+    build:
+      context: ../execution_persister
+    command:
+      - python3
+      - main.py
+    depends_on:
+      - redis
   redis:
     image: redis
     container_name: pub-sub-queue
@@ -67,3 +76,16 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local

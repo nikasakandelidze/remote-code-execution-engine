@@ -3,7 +3,6 @@ import json
 
 HOST = "redis"
 PORT = 6379
-
 CHANNEL = "execution.code.language"
 
 
@@ -15,4 +14,5 @@ class MessagingAdapter:
         if len(language) == 0 or len(content) == 0:
             return
         else:
+            print('Publishing message to pub-sub queue.')
             await self.redis_client.publish(CHANNEL, json.dumps({"language": language, "content": content}))

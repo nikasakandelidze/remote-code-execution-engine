@@ -26,6 +26,7 @@ class GatewaySevice:
             return
         try:
             print(f'DEBUG DATA: code:{code} language:{language}')
+            await message_adapter.publish_message(language, code)
             task_id = await self.queue_adapter.schedule_exec_task(code, language)
             return {"task_id": task_id}
         except Exception as e:
