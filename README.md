@@ -21,22 +21,21 @@ This is a list of languages current API can execute and work with:
 
 # Setup 
 - Enter the folder where main docker compose file is preset: `cd container`
-- Startup docker-compose services which use several dockerfiles located in nested directories: `docker-compose up -d --build --force-recreate`
+- Startup docker-compose services ( uses several dockerfiles ): 
+`docker-compose up -d --build --force-recreate`
 
-# Usage
+# Usage and API
 At the moment there is HTTP Rest api present for executing code in docker sandboxed containers.
 To see full list of API endpoints please look at OpenAPI specification that comes with server ( Please see port on fastAPI official page ).
-## General overview of endpoint functionalities
-For small load of executions ( for testing, and etc ), which uses separate HTTP workers under the hood, so in high load this will become slow for end users:
+#### For small load of executions ( for testing, and etc ), which uses separate HTTP workers under the hood, so in high load this will become slow for end users:
 - Endpoint: /api/run/
 - Method: POST
 - HTTP request body: { code: str, language: str }
-For bigger load of executions ( which will be the case in most of the cases in production like environment ), which uses Message queue ( RabbitMQ ) under the hood, to leave
-jobs of tasks of code executions which will execute at some point in time. So after leaving a task/job client-side will have to periodically fetch for update in result status:
+#### For bigger load of executions ( which will be the case in most of the cases in production like environment ), which uses Message queue ( RabbitMQ ) under the hood, to leave jobs of tasks of code executions which will execute at some point in time. So after leaving a task/job client-side will have to periodically fetch for update in result status:
 - Endpoint: /api/schedule
 - Method: POST
 - HTTP request body: { code: str, language: str }
-To check status and result of left job/task on the previous api endpoint
+#### To check status and result of left job/task on the previous api endpoint
 - Endpoint: /api/schedule/check/{id}
 - Method: GET
 
